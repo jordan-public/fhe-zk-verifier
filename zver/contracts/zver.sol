@@ -6,31 +6,98 @@ import "@fhenixprotocol/contracts/FHE.sol";
 import {Permissioned, Permission} from "@fhenixprotocol/contracts/access/Permissioned.sol";
 
 contract ZVER is Permissioned {
-  euint32 private counter;
+  euint16[] private pubInputs;
+  euint16[] private privInputs;
+  euint16[] private pubConst;
+  enum Instr {
+    Add,
+    Mul,
+    PushPub,
+    PushPriv,
+    PushConst}
+
+  Instr[] private program;
+  uint256[] private programParams;
+
+  euint16[] private stack;
+
   address public owner;
 
   constructor() {
     owner = msg.sender;
   }
 
-  function add(inEuint32 calldata encryptedValue) public {
-    euint32 value = FHE.asEuint32(encryptedValue);
-    counter = counter + value;
+  function addInstr(Instr instr, uint256 param) public {
+    program.push(instr);
+    programParams.push(param);
   }
 
-  function getCounter() public view returns (uint256) {
-    return FHE.decrypt(counter);
+  function addPubInput(uint16 input) public {
+    pubInputs.push(FHE.asEuint16(input));
   }
 
-  function getCounterPermit(
-    Permission memory permission
-  ) public view onlySender(permission) returns (uint256) {
-    return FHE.decrypt(counter);
+  function addPrivInput(inEuint16 calldata encryptedValue) public {
+    privInputs.push(FHE.asEuint16(encryptedValue));
   }
 
-  function getCounterPermitSealed(
-    Permission memory permission
-  ) public view onlySender(permission) returns (bytes memory) {
-    return FHE.sealoutput(counter, permission.publicKey);
+  function addPubConst(uint16 input) public {
+    pubConst.push(FHE.asEuint16(input));
   }
+
+  function runZver() public returns (euint16) {
+    for (uint i = 0; i < program.length; i++) {
+      if (program[i] == Instr.Add) {
+        euint16 a = stack[stack.length-1];
+        stack.pop();
+        euint16 b = stack[stack.length-1];
+        stack.pop();
+        pubInputs.push(a + b);
+      } else if (program[i] == Instr.Mul) {
+        euint16 a = stack[stack.length-1];
+        stack.pop();
+        euint16 b = stack[stack.length-1];
+        stack.pop();
+        pubInputs.push(a * b);
+      } else if (program[i] == Instr.PushConst) {
+        stack.push(pubConst[programParams[i]]);
+      } else if (program[i] == Instr.PushPriv) {
+        stack.push(privInputs[programParams[i]]);
+      } else if (program[i] == Instr.PushPub) {
+        stack.push(pubConst[programParams[i]]);
+      }
+    }
+    return stack[stack.length - 1];
+  }
+
+  function getDecrVer() public view returns (uint16) {
+    return FHE.decrypt(stack[stack.length - 1]);
+  }
+
+  // function getCounterPermit(
+  //   Permission memory permission
+  // ) public view onlySender(permission) returns (uint256) {
+  //   return FHE.decrypt(counter);
+  // }
+
+  // function getCounterPermitSealed(
+  //   Permission memory permission
+  // ) public view onlySender(permission) returns (bytes memory) {
+  //   return FHE.sealoutput(counter, permission.publicKey);
+  // }
+
+  // function testZver() public returns (uint16) {
+  //   addPubConst(type(uint16).max - 10 + 1); // -10
+
+  //   addInstr(Instr.PushConst, 0);
+  //   addInstr(Instr.PushPriv, 0);
+  //   addInstr(Instr.PushPriv, 1);
+  //   addInstr(Instr.Mul, 0);
+  //   addInstr(Instr.Add, 0);
+
+  //   addPrivInput(FHE.asInEuint16(2));
+  //   addPrivInput(FHE.asInEuint16(5));
+
+  //   runZver();
+  //   assert(getDecrVer() == 0);
+  // }
 }
