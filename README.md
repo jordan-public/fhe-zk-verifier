@@ -108,6 +108,10 @@ Successes:
 Failure:
 - We lost succinctness (until a better FHE friendly Bilinear Pairing Implementation).
 
+A side conclusion of this project would at least be:
+
+$FHE \supseteq SNARK \setminus S = NARK$
+
 ### Usages of ZVER
 
 It would be good for:
