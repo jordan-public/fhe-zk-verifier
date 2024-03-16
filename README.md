@@ -63,7 +63,7 @@ Function MillerLoop(Q, P, r):
 
         // If the i-th bit of r is 1, add Q to T and update f accordingly
         if r[i] == 1 then:
-            // l(A, B, C) is a line going through A and B eveluated at C
+            // l(A, B, C) is a line going through A and B evaluated at C
             f = f * l(T, Q, P)
             T = T + Q
 
@@ -110,7 +110,9 @@ Failure:
 
 A side conclusion of this project would at least be:
 
-$FHE \supseteq SNARK \setminus S = NARK$
+$FHE \supseteq zkSNARK \setminus S = zkNARK$
+
+Or put in words, short of succinctness FHEnix apps can do everything a zkSNARK app can do.
 
 ### Usages of ZVER
 
