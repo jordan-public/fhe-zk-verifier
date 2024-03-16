@@ -27,8 +27,17 @@ const func: DeployFunction = async function () {
   });
 
   console.log(`Counter contract: `, counter.address);
+
+  const zver = await deploy("ZVER", {
+    from: signer.address,
+    args: [],
+    log: true,
+    skipIfAlreadyDeployed: false,
+  });
+
+  console.log(`ZVER contract: `, zver.address);
 };
 
 export default func;
-func.id = "deploy_counter";
-func.tags = ["Counter"];
+func.id = "deploy_counter_zver";
+func.tags = ["Counter", "ZVER"];
