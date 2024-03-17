@@ -35,8 +35,7 @@ task("task:testZver")
       let receipt = await tx.wait();
       console.log('reset');
 
-      //tx = await contractWithSigner.addPubConst(Number(2**16 - 10)); // -10
-      tx = await contractWithSigner.addPubConst(Number(10));
+      tx = await contractWithSigner.addPubConst(Number(2**16 - 10)); // -10
       receipt = await tx.wait();
       console.log('addPubConst');
 
