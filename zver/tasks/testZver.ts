@@ -2,6 +2,10 @@ import { ZVER } from "../types";
 import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
 task("task:testZver")
   .setAction(async function (_taskArguments: TaskArguments, hre) {
     const { fhenixjs, ethers, deployments } = hre;
@@ -29,37 +33,37 @@ task("task:testZver")
 
       let tx = await contractWithSigner.addPubConst(Number(2*16 - 10)); // -10
       let receipt = await tx.wait();
-      console.log('addPubConst: ', receipt.transactionHash);
+      console.log('addPubConst');
 
       tx = await contractWithSigner.addInstr(PUSH_CONST, Number(0));
       receipt = await tx.wait();
-      console.log('addInstr: ', receipt.transactionHash);
+      console.log('addInstr');
 
       tx = await contractWithSigner.addInstr(PUSH_PRIV, Number(0));
       receipt = await tx.wait();
-      console.log('addInstr: ', receipt.transactionHash);
+      console.log('addInstr');
 
       tx = await contractWithSigner.addInstr(PUSH_PRIV, Number(1));
       receipt = await tx.wait();
-      console.log('addInstr: ', receipt.transactionHash);
+      console.log('addInstr');
 
       tx = await contractWithSigner.addInstr(INSTR_MUL, Number(0));
       receipt = await tx.wait();
-      console.log('addInstr: ', receipt.transactionHash);
+      console.log('addInstr');
 
       tx = await contractWithSigner.addInstr(INSTR_ADD, Number(0));
       receipt = await tx.wait();
-      console.log('addInstr: ', receipt.transactionHash);
+      console.log('addInstr');
   
       let encryptedAmount = await fhenixjs.encrypt_uint32(2);
       tx = await contractWithSigner.addPrivInput(encryptedAmount);
       receipt = await tx.wait();
-      console.log('addPrivInput: ', receipt.transactionHash);
+      console.log('addPrivInput');
 
       encryptedAmount = await fhenixjs.encrypt_uint32(5);
       tx = await contractWithSigner.addPrivInput(encryptedAmount);
       receipt = await tx.wait();
-      console.log('addPrivInput: ', receipt.transactionHash);
+      console.log('addPrivInput');
 
       tx = await contractWithSigner.runZver();
       receipt = await tx.wait();
