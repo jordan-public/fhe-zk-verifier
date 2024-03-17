@@ -1,5 +1,7 @@
 # ZVER - FHE ZK Verifier
 
+For demo and video see [here](./docs/README.md).
+
 ## Abstract
 
 We create and demonstrate a proving system that can run inside FHEnix, an EVM blockchain that is capable of Fully Homomorphic Encryption (FHE). As the FHE acts on the two operations, addition ("+") and multiplication ("*") allowing calculations of both operations on encrypted data, the inverse operations are quite expensive in terms of computational resources (Gas). Exponentiations is quite unreasonable and calculation of a Bilinear Pairing Function is prohibitive. To make reasonable compromise, we
