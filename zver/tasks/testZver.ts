@@ -70,7 +70,7 @@ task("task:testZver")
       receipt = await tx.wait();
       console.log('addPrivInput');
 
-      tx = await contractWithSigner.runZver({gasLimit: 10000000});
+      tx = await contractWithSigner.runZver({gasLimit: 100000000});
       receipt = await tx.wait();
       console.log('runZver');
   

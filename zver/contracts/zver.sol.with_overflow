@@ -55,19 +55,34 @@ contract ZVER is Permissioned {
   }
 
   function runZver() public {
-    for (uint i = 0; i < program.length; i++) {
+    require(pubInputs.length == 0, "pubInputs.length == 0 ");
+    require(privInputs.length == 2, "privInputs.length == 2");
+    require(pubConst.length == 1, "pubConst.length == 1");
+    require(program.length == 5, "program.length == 5");
+    //for (uint i = 0; i < program.length; i++) {
+    for (uint256 i = 0; i < 5; i++) {
       if (program[i] == Instr.Add) {
         euint16 a = stack[stack.length-1];
         stack.pop();
         euint16 b = stack[stack.length-1];
         stack.pop();
-        stack.push(a + b);
+        euint32 aa = FHE.asEuint32(a);
+        euint32 bb = FHE.asEuint32(b);
+        euint32 cc = aa + bb;
+        cc = cc % FHE.asEuint32(65536);
+        stack.push(FHE.asEuint16(cc));
+        //stack.push(a + b);
       } else if (program[i] == Instr.Mul) {
         euint16 a = stack[stack.length-1];
         stack.pop();
         euint16 b = stack[stack.length-1];
         stack.pop();
-        stack.push(a * b);
+        euint32 aa = FHE.asEuint32(a);
+        euint32 bb = FHE.asEuint32(b);
+        euint32 cc = aa * bb;
+        cc = cc % FHE.asEuint32(65536);
+        stack.push(FHE.asEuint16(cc));
+        //stack.push(a * b);
       } else if (program[i] == Instr.PushConst) {
         stack.push(pubConst[programParams[i]]);
       } else if (program[i] == Instr.PushPriv) {
