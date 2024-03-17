@@ -4,6 +4,7 @@ pragma solidity >=0.8.13 <0.9.0;
 
 import "@fhenixprotocol/contracts/FHE.sol";
 import {Permissioned, Permission} from "@fhenixprotocol/contracts/access/Permissioned.sol";
+import "hardhat/console.sol";
 
 contract ZVER is Permissioned {
   euint16[] private pubInputs;
@@ -27,6 +28,15 @@ contract ZVER is Permissioned {
     owner = msg.sender;
   }
 
+  function reset() public {
+    delete pubInputs;
+    delete privInputs;
+    delete pubConst;
+    delete program;
+    delete programParams;
+    delete stack;
+  }
+
   function addInstr(Instr instr, uint256 param) public {
     program.push(instr);
     programParams.push(param);
@@ -44,29 +54,33 @@ contract ZVER is Permissioned {
     pubConst.push(FHE.asEuint16(input));
   }
 
-  function runZver() public returns (euint16) {
-    for (uint i = 0; i < program.length; i++) {
+  function runZver() public {
+    require(pubInputs.length == 0, "pubInputs.length == 0");
+    require(privInputs.length == 2, "privInputs.length == 2");
+    require(pubConst.length == 1, "pubConst.length == 1");
+    require(program.length == 5, "program.length == 5");
+    //for (uint i = 0; i < program.length; i++) {
+    for (uint256 i = 0; i < 5; i++) {
       if (program[i] == Instr.Add) {
         euint16 a = stack[stack.length-1];
         stack.pop();
         euint16 b = stack[stack.length-1];
         stack.pop();
-        pubInputs.push(a + b);
+        stack.push(a + b);
       } else if (program[i] == Instr.Mul) {
         euint16 a = stack[stack.length-1];
         stack.pop();
         euint16 b = stack[stack.length-1];
         stack.pop();
-        pubInputs.push(a * b);
+        stack.push(a * b);
       } else if (program[i] == Instr.PushConst) {
         stack.push(pubConst[programParams[i]]);
       } else if (program[i] == Instr.PushPriv) {
         stack.push(privInputs[programParams[i]]);
       } else if (program[i] == Instr.PushPub) {
-        stack.push(pubConst[programParams[i]]);
+        stack.push(pubInputs[programParams[i]]);
       }
-    }
-    return stack[stack.length - 1];
+     }
   }
 
   function getDecrVer() public view returns (uint16) {

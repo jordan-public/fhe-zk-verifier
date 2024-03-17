@@ -24,15 +24,20 @@ task("task:testZver")
 
     const INSTR_ADD = 0;
     const INSTR_MUL = 1;
-    const PUSH_CONST = 2;
+    const PUSH_PUB = 2;
     const PUSH_PRIV = 3;
-    const PUSH_PUB = 4;
-
+    const PUSH_CONST = 4;
+    
     try {
       console.log('Testing ZVER contract...');
 
-      let tx = await contractWithSigner.addPubConst(Number(2*16 - 10)); // -10
+      let tx = await contractWithSigner.reset();
       let receipt = await tx.wait();
+      console.log('reset');
+
+      //tx = await contractWithSigner.addPubConst(Number(2**16 - 10)); // -10
+      tx = await contractWithSigner.addPubConst(Number(10));
+      receipt = await tx.wait();
       console.log('addPubConst');
 
       tx = await contractWithSigner.addInstr(PUSH_CONST, Number(0));
@@ -65,9 +70,9 @@ task("task:testZver")
       receipt = await tx.wait();
       console.log('addPrivInput');
 
-      tx = await contractWithSigner.runZver();
+      tx = await contractWithSigner.runZver({gasLimit: 10000000});
       receipt = await tx.wait();
-      console.log('runZver: ', receipt.transactionHash);
+      console.log('runZver');
   
       const result = await contract.getDecrVer();
       console.log(`Verification Result: ${result.toString()}`);
