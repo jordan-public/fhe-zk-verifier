@@ -29,12 +29,12 @@ contract ZVER is Permissioned {
   }
 
   function reset() public {
-    delete pubInputs;
-    delete privInputs;
-    delete pubConst;
-    delete program;
-    delete programParams;
-    delete stack;
+    delete pubInputs; pubInputs = new euint16[](0);
+    delete privInputs; privInputs = new euint16[](0);
+    delete pubConst; pubConst = new euint16[](0);
+    delete program; program = new Instr[](0);
+    delete programParams; programParams = new uint256[](0);
+    delete stack; stack = new euint16[](0);
   }
 
   function addInstr(Instr instr, uint256 param) public {
