@@ -1,3 +1,7 @@
+[This project](https://ethglobal.com/showcase/zver-fhe-zkverifier-6dmq3) won the following prize at the [ETHGlobal London 2024](https://ethglobal.com/events/london2024) hackathon:
+
+🏆 [Fhenix - Best use of Fhenix Stack 1st place](https://ethglobal.com/showcase/zver-fhe-zkverifier-6dmq3)
+
 # ZVER - FHE ZK Verifier
 
 For demo and video see [here](./docs/README.md).
